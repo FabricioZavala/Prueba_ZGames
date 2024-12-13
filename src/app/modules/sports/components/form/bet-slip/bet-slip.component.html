@@ -1,0 +1,25 @@
+<div class="bet-slip-container" *ngIf="bets.length > 0; else emptySlip">
+    <h3>Resumen de Apuestas</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Evento</th>
+          <th>Selección</th>
+          <th>Monto</th>
+          <th>Ganancia Potencial</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let bet of bets">
+          <td>{{ bet.eventName }}</td>
+          <td>{{ bet.selectedOutcomeName }}</td>
+          <td>{{ bet.stake }}</td>
+          <td>{{ bet.potentialWin | number:'1.2-2' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <ng-template #emptySlip>
+    <p>No hay apuestas aún.</p>
+  </ng-template>
+  
