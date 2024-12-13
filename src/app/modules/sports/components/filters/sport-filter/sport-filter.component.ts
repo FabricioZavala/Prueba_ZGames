@@ -6,10 +6,39 @@ import { Component, EventEmitter, Output } from '@angular/core';
   styleUrls: ['./sport-filter.component.scss'],
 })
 export class SportFilterComponent {
-  @Output() filterChange = new EventEmitter<string>();
-  searchTerm: string = '';
+  @Output() filterChange = new EventEmitter<{
+    evento?: string;
+    local?: string;
+    visitante?: string;
+    torneo?: string;
+    fecha?: string;
+    estado?: string;
+  }>();
 
-  onSearchChange() {
-    this.filterChange.emit(this.searchTerm);
+  filters = {
+    evento: '',
+    local: '',
+    visitante: '',
+    torneo: '',
+    fecha: '',
+    estado: '',
+  };
+
+  // Emitir los filtros actuales
+  onSearch() {
+    this.filterChange.emit({ ...this.filters });
+  }
+
+  // Restablecer todos los filtros y emitir el cambio
+  onReset() {
+    this.filters = {
+      evento: '',
+      local: '',
+      visitante: '',
+      torneo: '',
+      fecha: '',
+      estado: '',
+    };
+    this.filterChange.emit(this.filters);
   }
 }

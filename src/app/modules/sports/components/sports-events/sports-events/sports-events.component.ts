@@ -1,8 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { SportsBettingService } from 'src/app/core/services/sports-betting.service';
-import { SportsEvent, Outcome } from 'src/app/core/interfaces/sports-event.interface';
+import {
+  SportsEvent,
+  Outcome,
+} from 'src/app/core/interfaces/sports-event.interface';
 
-
+interface FilterCriteria {
+  evento?: string;
+  local?: string;
+  visitante?: string;
+  torneo?: string;
+  estado?: string;
+  fecha?: any;
+}
 
 interface UserBet {
   eventName: string;
@@ -21,7 +31,10 @@ export class SportsEventsComponent implements OnInit {
   sportEvents: SportsEvent[] = [];
   filteredEvents: SportsEvent[] = [];
   isLoading: boolean = true;
-  filterTerm: string = '';
+
+  // Filtro con las propiedades opcionales
+  filterTerm: FilterCriteria = {};
+
   selectedBets: UserBet[] = [];
 
   selectedEventId: string | null = null;
@@ -46,23 +59,44 @@ export class SportsEventsComponent implements OnInit {
     });
   }
 
-  onFilterChange(term: string) {
-    this.filterTerm = term;
+  onFilterChange(filters: FilterCriteria) {
+    this.filterTerm = filters;
     this.applyFilter();
   }
 
   applyFilter() {
-    if (!this.filterTerm) {
-      this.filteredEvents = this.sportEvents;
-    } else {
-      const lowerTerm = this.filterTerm.toLowerCase();
-      this.filteredEvents = this.sportEvents.filter(evt => {
-        const homeTeam = evt.competitorHome?.competitorName?.es?.toLowerCase() || '';
-        const awayTeam = evt.competitorAway?.competitorName?.es?.toLowerCase() || '';
-        const tournament = evt.tournament?.tournamentName?.es?.toLowerCase() || '';
-        return homeTeam.includes(lowerTerm) || awayTeam.includes(lowerTerm) || tournament.includes(lowerTerm);
-      });
-    }
+    this.filteredEvents = this.sportEvents.filter((evt) => {
+      const eventoName = (evt.sportEventName?.es || '').toLowerCase();
+      const localName = (
+        evt.competitorHome?.competitorName?.es || ''
+      ).toLowerCase();
+      const visitanteName = (
+        evt.competitorAway?.competitorName?.es || ''
+      ).toLowerCase();
+      const torneoName = (
+        evt.tournament?.tournamentName?.es || ''
+      ).toLowerCase();
+      const estadoName = (evt.eventStatus?.matchStatus?.es || '').toLowerCase();
+      const fechaEvento = evt.scheduled?.split('T')[0];
+      const filtroFecha = this.filterTerm.fecha
+        ? new Date(this.filterTerm.fecha)
+        : null;
+
+      return (
+        (!this.filterTerm.evento ||
+          eventoName.includes(this.filterTerm.evento.toLowerCase())) &&
+        (!this.filterTerm.local ||
+          localName.includes(this.filterTerm.local.toLowerCase())) &&
+        (!this.filterTerm.visitante ||
+          visitanteName.includes(this.filterTerm.visitante.toLowerCase())) &&
+        (!this.filterTerm.torneo ||
+          torneoName.includes(this.filterTerm.torneo.toLowerCase())) &&
+        (!this.filterTerm.estado ||
+          estadoName === this.filterTerm.estado.toLowerCase()) &&
+        (!filtroFecha ||
+          new Date(fechaEvento).getTime() === filtroFecha.getTime())
+      );
+    });
   }
 
   selectEventForBet(eventId: string) {
@@ -92,5 +126,9 @@ export class SportsEventsComponent implements OnInit {
     this.selectedEventId = null;
     this.selectedOutcome = null;
     this.betAmount = 0;
+  }
+
+  removeBet(index: number) {
+    this.selectedBets.splice(index, 1); // Elimina la apuesta en el índice indicado
   }
 }

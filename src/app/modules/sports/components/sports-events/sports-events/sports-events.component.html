@@ -1,67 +1,70 @@
-<div *ngIf="isLoading" class="loading">Cargando eventos deportivos...</div>
+<div class="container-fluid">
+  <app-sport-filter (filterChange)="onFilterChange($event)"></app-sport-filter>
 
-<app-sport-filter (filterChange)="onFilterChange($event)"></app-sport-filter>
+  <div class="row">
+    <div class="col-md-9">
+      <table class="table table-striped">
+        <thead class="table-dark">
+          <tr>
+            <th>Evento</th>
+            <th>Fecha</th>
+            <th>Local</th>
+            <th>Visitante</th>
+            <th>Torneo</th>
+            <th>Estado</th>
+            <th>Cuotas</th>
+            <th>Apuesta</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let event of filteredEvents">
+            <td>{{ event.sportEventName?.es }}</td>
+            <td>{{ event.scheduled | date: 'dd/MM/yy' }}</td>
+            <td>{{ event.competitorHome?.competitorName?.es }}</td>
+            <td>{{ event.competitorAway?.competitorName?.es }}</td>
+            <td>{{ event.tournament?.tournamentName?.es }}</td>
+            <td>{{ event.eventStatus?.matchStatus?.es }}</td>
+            <td>
+              <div class="d-flex justify-content-around">
+                <button
+                  *ngFor="let outcome of event.markets?.[0]?.marketLines?.[0]?.outcomes"
+                  class="btn btn-sm btn-outline-primary"
+                  (click)="
+                    selectEventForBet(event.eventId); selectOutcome(outcome)
+                  "
+                  [class.active]="
+                    event.eventId === selectedEventId &&
+                    selectedOutcome === outcome
+                  "
+                >
+                  {{ outcome.outcomeName.es }} ({{ outcome.odds }})
+                </button>
+              </div>
+            </td>
+            <td>
+              <div
+                *ngIf="event.eventId === selectedEventId"
+                class="input-group"
+              >
+                <input
+                  type="number"
+                  class="form-control"
+                  placeholder="Monto"
+                  [(ngModel)]="betAmount"
+                  min="1"
+                />
+                <button class="btn btn-success" (click)="addBet(event)">
+                  Agregar
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-<div *ngIf="!isLoading && filteredEvents.length > 0" class="table-container">
-  <table>
-    <thead>
-      <tr>
-        <th>Evento</th>
-        <th>Fecha</th>
-        <th>Local</th>
-        <th>Visitante</th>
-        <th>Cuotas (1 - X - 2)</th>
-        <th>Apuesta</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let event of filteredEvents">
-        <td>{{ event.sportEventName?.es }}</td>
-        <td>{{ event.scheduled | date : "medium" }}</td>
-        <td>{{ event.competitorHome?.competitorName?.es }}</td>
-        <td>{{ event.competitorAway?.competitorName?.es }}</td>
-        <td>
-          <ng-container
-            *ngIf="event.markets?.[0]?.marketLines?.[0]?.outcomes as outcomes"
-          >
-            <span *ngFor="let o of outcomes" class="outcome-option">
-              <input
-                type="radio"
-                name="outcome_{{ event.eventId }}"
-                [value]="o"
-                (change)="selectEventForBet(event.eventId); selectOutcome(o)"
-                [checked]="
-                  event.eventId === selectedEventId && selectedOutcome === o
-                "
-              />
-              {{ o.outcomeName.es }} ({{ o.odds }})
-            </span>
-          </ng-container>
-        </td>
-        <td *ngIf="event.eventId === selectedEventId">
-          <div class="bet-input">
-            <input
-              type="number"
-              placeholder="Monto"
-              [(ngModel)]="betAmount"
-              min="1"
-              step="0.01"
-            />
-            <button (click)="addBet(event)">Agregar Apuesta</button>
-          </div>
-        </td>
-        <td *ngIf="event.eventId !== selectedEventId">
-          <button (click)="selectEventForBet(event.eventId)">
-            Seleccionar
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+    <div class="col-md-3">
+        <app-bet-slip [bets]="selectedBets" (betRemoved)="removeBet($event)"></app-bet-slip>
+    </div>
+  </div>
 </div>
-
-<div *ngIf="!isLoading && filteredEvents.length === 0" class="no-events">
-  No hay eventos disponibles.
-</div>
-
-<app-bet-slip [bets]="selectedBets"></app-bet-slip>
