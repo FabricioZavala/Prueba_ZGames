@@ -1,13 +1,13 @@
 .header {
     width: 100%;
-    background-color: #343a40;
-    color: white;
-    padding: 10px 20px;
+    background-color: #ffffff;
+    color: #28a745;
+    padding: 15px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    position: fixed;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: sticky;
     top: 0;
     z-index: 1000;
   }
@@ -20,23 +20,36 @@
   }
   
   .header-title {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: bold;
     margin: 0;
   }
   
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .username {
+    font-size: 16px;
+    color: #28a745;
+    font-weight: bold;
+  }
+  
   .logout-button {
-    background-color: #dc3545;
+    background-color: #28a745;
     border: none;
     color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
+    padding: 8px 15px;
+    border-radius: 20px;
     cursor: pointer;
     font-size: 14px;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
   }
   
   .logout-button:hover {
-    background-color: #c82333;
+    background-color: #218838;
+    transform: scale(1.05);
   }
   

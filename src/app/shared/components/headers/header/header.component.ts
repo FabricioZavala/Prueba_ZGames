@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth.service';
 
@@ -7,8 +7,15 @@ import { AuthService } from 'src/app/core/services/auth.service';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
+  username: string | null = '';
+
   constructor(private authService: AuthService, private router: Router) {}
+
+  ngOnInit(): void {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    this.username = user?.username || 'Invitado';
+  }
 
   logout(): void {
     this.authService.logout();

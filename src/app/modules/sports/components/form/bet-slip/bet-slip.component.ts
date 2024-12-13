@@ -8,12 +8,11 @@ import { Bet } from 'src/app/core/interfaces/bet.interface';
   styleUrls: ['./bet-slip.component.scss'],
 })
 export class BetSlipComponent {
-  @Input() bets: Bet[] = []; // Lista de apuestas recibida del componente padre
-  @Output() betRemoved = new EventEmitter<number>(); // Evento para eliminar una apuesta
+  @Input() bets: Bet[] = []; 
+  @Output() betRemoved = new EventEmitter<number>();
 
   constructor(private sportsBettingService: SportsBettingService) {}
 
-  // Método para emitir el índice de la apuesta que se desea eliminar
   removeBet(index: number) {
     this.betRemoved.emit(index);
   }

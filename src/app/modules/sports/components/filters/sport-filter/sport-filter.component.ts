@@ -24,12 +24,10 @@ export class SportFilterComponent {
     estado: '',
   };
 
-  // Emitir los filtros actuales
   onSearch() {
     this.filterChange.emit({ ...this.filters });
   }
 
-  // Restablecer todos los filtros y emitir el cambio
   onReset() {
     this.filters = {
       evento: '',

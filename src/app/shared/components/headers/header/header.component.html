@@ -1,7 +1,10 @@
 <header class="header">
     <div class="header-container">
-      <h1 class="header-title">Sorti 2.0</h1>
-      <button class="logout-button" (click)="logout()">Cerrar sesión</button>
+      <h1 class="header-title text-success">Sorti 2.0</h1>
+      <div class="user-info">
+        <span class="username">{{ username }}</span>
+        <button class="logout-button" (click)="logout()">Cerrar sesión</button>
+      </div>
     </div>
   </header>
   <router-outlet></router-outlet>

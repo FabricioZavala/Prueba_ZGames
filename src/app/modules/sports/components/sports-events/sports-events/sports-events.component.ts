@@ -3,17 +3,11 @@ import { SportsBettingService } from 'src/app/core/services/sports-betting.servi
 import {
   SportsEvent,
   Outcome,
+  FilterCriteria,
 } from 'src/app/core/interfaces/sports-event.interface';
 import { Bet } from 'src/app/core/interfaces/bet.interface';
 
-interface FilterCriteria {
-  evento?: string;
-  local?: string;
-  visitante?: string;
-  torneo?: string;
-  estado?: string;
-  fecha?: any;
-}
+
 
 @Component({
   selector: 'app-sports-events',
