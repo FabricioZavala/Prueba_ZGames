@@ -1,25 +1,26 @@
-<div class="bet-slip-container" *ngIf="bets.length > 0; else emptySlip">
-    <h3>Resumen de Apuestas</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Evento</th>
-          <th>Selección</th>
-          <th>Monto</th>
-          <th>Ganancia Potencial</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let bet of bets">
-          <td>{{ bet.eventName }}</td>
-          <td>{{ bet.selectedOutcomeName }}</td>
-          <td>{{ bet.stake }}</td>
-          <td>{{ bet.potentialWin | number:'1.2-2' }}</td>
-        </tr>
-      </tbody>
-    </table>
+<div class="card shadow-sm">
+    <div class="card-header bg-success text-white">
+      <h5 class="text-center">Resumen de Apuestas</h5>
+    </div>
+    <ul class="list-group list-group-flush">
+      <li
+        *ngFor="let bet of bets; let i = index"
+        class="list-group-item d-flex justify-content-between align-items-center"
+      >
+        <div>
+          <strong>{{ bet.eventName }}</strong>
+          <p class="mb-1">Pronóstico: {{ bet.selectedOutcomeName }}</p>
+          <p class="mb-1">Monto: {{ bet.stake }}</p>
+          <p class="mb-1">Ganancia: {{ bet.potentialWin | number: '1.2-2' }}</p>
+        </div>
+        <button class="btn btn-danger btn-sm" (click)="removeBet(i)">Eliminar</button>
+      </li>
+    </ul>
+    <div *ngIf="bets.length === 0" class="card-body text-center">
+      <p class="text-muted">No hay apuestas agregadas.</p>
+    </div>
+    <div *ngIf="bets.length > 0" class="card-footer text-center">
+      <button class="btn btn-primary" (click)="saveBets()">Guardar Apuestas</button>
+    </div>
   </div>
-  <ng-template #emptySlip>
-    <p>No hay apuestas aún.</p>
-  </ng-template>
   

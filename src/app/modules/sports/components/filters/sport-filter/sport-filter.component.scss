@@ -1,14 +1,14 @@
-.filter-container {
-    width: 100%;
-    margin-bottom: 1rem;
-    display: flex;
-    justify-content: center;
+.card {
+    border-radius: 8px;
+    background-color: #ffffff;
+  }
   
-    input {
-      width: 80%;
-      max-width: 400px;
-      padding: 0.5rem;
-      font-size: 1rem;
-    }
+  input::placeholder {
+    font-style: italic;
+    color: #6c757d;
+  }
+  
+  button {
+    font-weight: bold;
   }
   

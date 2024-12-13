@@ -50,3 +50,11 @@ export interface SportsEvent {
     outcomeName: { es: string; en: string };
   }
   
+  export interface FilterCriteria {
+    evento?: string;
+    local?: string;
+    visitante?: string;
+    torneo?: string;
+    estado?: string;
+    fecha?: any;
+  }
