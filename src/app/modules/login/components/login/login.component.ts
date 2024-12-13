@@ -16,18 +16,21 @@ export class LoginComponent {
 
   login(): void {
     const credentials = { email: this.email, password: this.password };
+
     this.authService.login(credentials).subscribe({
       next: (response) => {
-        console.log('User logged in:', response);
-        this.authService.saveToken(response.token);
+        console.log('Usuario autenticado:', response);
         this.errorMessage = '';
-        // Redirigir a la página de eventos deportivos después de iniciar sesión
+        // Redirigir al usuario a la página de eventos deportivos
         this.router.navigate(['/sports-events']);
       },
       error: (error) => {
-        console.error('Error logging in:', error);
+        console.error('Error al iniciar sesión:', error);
         this.errorMessage = error.error.message || 'Error al iniciar sesión';
       },
     });
+  }
+  navigateToRegister(): void {
+    this.router.navigate(['/register']);
   }
 }
