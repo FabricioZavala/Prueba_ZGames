@@ -4,6 +4,7 @@ import {
   SportsEvent,
   Outcome,
 } from 'src/app/core/interfaces/sports-event.interface';
+import { Bet } from 'src/app/core/interfaces/bet.interface';
 
 interface FilterCriteria {
   evento?: string;
@@ -12,14 +13,6 @@ interface FilterCriteria {
   torneo?: string;
   estado?: string;
   fecha?: any;
-}
-
-interface UserBet {
-  eventName: string;
-  selectedOutcomeName: string;
-  odds: number;
-  stake: number;
-  potentialWin: number;
 }
 
 @Component({
@@ -32,11 +25,9 @@ export class SportsEventsComponent implements OnInit {
   filteredEvents: SportsEvent[] = [];
   isLoading: boolean = true;
 
-  // Filtro con las propiedades opcionales
   filterTerm: FilterCriteria = {};
 
-  selectedBets: UserBet[] = [];
-
+  selectedBets: Bet[] = [];
   selectedEventId: string | null = null;
   selectedOutcome: Outcome | null = null;
   betAmount: number = 0;
@@ -44,27 +35,40 @@ export class SportsEventsComponent implements OnInit {
   constructor(private sportsBettingService: SportsBettingService) {}
 
   ngOnInit(): void {
-    this.sportsBettingService.getSportEvents().subscribe({
-      next: (response) => {
-        if (response?.data) {
-          this.sportEvents = response.data;
-          this.applyFilter();
-        }
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error fetching sport events:', error);
-        this.isLoading = false;
-      },
-    });
+    this.fetchSportsEvents();
   }
 
-  onFilterChange(filters: FilterCriteria) {
+  fetchSportsEvents(): void {
+    const localData = localStorage.getItem('sportsEvents');
+    if (localData) {
+      console.log('Using data from localStorage');
+      this.sportEvents = JSON.parse(localData);
+      this.applyFilter();
+    } else {
+      console.log('Fetching data from API');
+      this.sportsBettingService.getSportEvents().subscribe({
+        next: (response) => {
+          if (response?.data) {
+            this.sportEvents = response.data;
+            localStorage.setItem('sportsEvents', JSON.stringify(response.data));
+            this.applyFilter();
+          }
+          this.isLoading = false;
+        },
+        error: (error) => {
+          console.error('Error fetching sport events:', error);
+          this.isLoading = false;
+        },
+      });
+    }
+  }
+
+  onFilterChange(filters: FilterCriteria): void {
     this.filterTerm = filters;
     this.applyFilter();
   }
 
-  applyFilter() {
+  applyFilter(): void {
     this.filteredEvents = this.sportEvents.filter((evt) => {
       const eventoName = (evt.sportEventName?.es || '').toLowerCase();
       const localName = (
@@ -99,22 +103,24 @@ export class SportsEventsComponent implements OnInit {
     });
   }
 
-  selectEventForBet(eventId: string) {
+  selectEventForBet(eventId: string): void {
     this.selectedEventId = eventId;
     this.selectedOutcome = null;
     this.betAmount = 0;
   }
 
-  selectOutcome(outcome: Outcome) {
+  selectOutcome(outcome: Outcome): void {
     this.selectedOutcome = outcome;
   }
 
-  addBet(event: SportsEvent) {
+  addBet(event: SportsEvent): void {
     if (!this.selectedOutcome || this.betAmount <= 0) {
       return;
     }
     const potentialWin = this.betAmount * this.selectedOutcome.odds;
-    const userBet: UserBet = {
+    const userBet: Bet = {
+      userId: 'USER_ID', // Replace with actual user ID if available
+      eventId: event.eventId,
       eventName: event.sportEventName.es,
       selectedOutcomeName: this.selectedOutcome.outcomeName.es,
       odds: this.selectedOutcome.odds,
@@ -128,7 +134,21 @@ export class SportsEventsComponent implements OnInit {
     this.betAmount = 0;
   }
 
-  removeBet(index: number) {
-    this.selectedBets.splice(index, 1); // Elimina la apuesta en el índice indicado
+  removeBet(index: number): void {
+    this.selectedBets.splice(index, 1);
+  }
+
+  sendBet(bet: Bet): void {
+    console.log('Sending bet to backend:', bet);
+
+    this.sportsBettingService.placeBet(bet).subscribe({
+      next: (response) => {
+        console.log('Bet successfully sent:', response);
+        this.selectedBets = this.selectedBets.filter((b) => b !== bet);
+      },
+      error: (error) => {
+        console.error('Error sending bet:', error);
+      },
+    });
   }
 }

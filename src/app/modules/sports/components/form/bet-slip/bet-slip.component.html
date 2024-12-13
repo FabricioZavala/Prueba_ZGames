@@ -1,5 +1,5 @@
 <div class="card">
-    <div class="card-header bg-primary text-white">
+    <div class="card-header bg-success text-white">
       <h5 class="text-center">Resumen de Apuestas</h5>
     </div>
     <ul class="list-group list-group-flush">
@@ -18,6 +18,9 @@
     </ul>
     <div *ngIf="bets.length === 0" class="card-body text-center">
       <p class="text-muted">No hay apuestas agregadas.</p>
+    </div>
+    <div *ngIf="bets.length > 0" class="card-footer text-center">
+      <button class="btn btn-primary" (click)="saveBets()">Guardar Apuestas</button>
     </div>
   </div>
   

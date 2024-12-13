@@ -19,7 +19,7 @@
         <tbody>
           <tr *ngFor="let event of filteredEvents">
             <td>{{ event.sportEventName?.es }}</td>
-            <td>{{ event.scheduled | date: 'dd/MM/yy' }}</td>
+            <td>{{ event.scheduled | date : "dd/MM/yy" }}</td>
             <td>{{ event.competitorHome?.competitorName?.es }}</td>
             <td>{{ event.competitorAway?.competitorName?.es }}</td>
             <td>{{ event.tournament?.tournamentName?.es }}</td>
@@ -64,7 +64,11 @@
     </div>
 
     <div class="col-md-3">
-        <app-bet-slip [bets]="selectedBets" (betRemoved)="removeBet($event)"></app-bet-slip>
+      <app-bet-slip
+        [bets]="selectedBets"
+        (betRemoved)="removeBet($event)"
+      ></app-bet-slip>
+      
     </div>
   </div>
 </div>

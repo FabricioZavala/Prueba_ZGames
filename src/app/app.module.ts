@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SportsModule } from './modules/sports/sports.module';
 import { HttpClientModule } from '@angular/common/http';
+import { AuthModule } from './modules/login/auth.module';
 
 @NgModule({
   declarations: [
@@ -14,9 +15,10 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserModule,
     AppRoutingModule,
     SportsModule,
-    HttpClientModule
+    HttpClientModule,
+    AuthModule
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}
